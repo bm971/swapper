@@ -1,15 +1,36 @@
 ---
 - name: Execute command on selected remote hosts
-  hosts: "{{ selected_host }}"
+  hosts: localhost
   gather_facts: no
 
   tasks:
-    - name: Run 'free -m' command on the selected host
-      shell: | 
+    - name: Read hosts from file
+      slurp:
+        src: "{{ filepath }}" # ansible.cfg-ből
+      register: hosts_file_content
+    - name: Set hosts list fact
+      set_fact:
+        host_list: "{{ hosts_file_content['content'] | b64decode | from_yaml }}"
+        
+    - name: Display hosts options
+      debug:
+        var: host_list
+    - name: Ask for host selection
+      pause:
+        prompt: "Please enter the number of the host you want to connect to: "
+      register: server_selection
+    - name: Set selected hosts fact
+      set_fact:
+        selected_host: "{{ host_list[server_selection.user_input|int - 1] }}"
+    - name: Display selected host
+      debug: 
+        var: selected_host
+
+    - name: Run 'free -m' on the selected host
+      shell: |
         free -m
         date
-      args:
-        executable: /bin/bash
+      delegate_to: "{{ selected_host.ip }}"
       register: command1_output
     - name: Display 'free -m' output
       debug:
@@ -39,7 +60,7 @@
         date
       args:
         executable: /bin/bash
-      register: swapon_output
+      register: swapon_outputs
     
     - name: Display swapon output
       debug:
