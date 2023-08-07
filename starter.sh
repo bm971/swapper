@@ -21,7 +21,7 @@ menu_from_array ()
     # Check the selected menu item number
     if [ 1 -le "$REPLY" ] && [ "$REPLY" -le $# ]; then
        targetIndex=$((REPLY-1))
-       targethost=${hostarray[$targetIndex]} # because using Galambos David ssh config we need to use hostname instead of IP address!!!
+       targethost=${hostarray[$targetIndex]} # because using ssh config we need to use hostname instead of IP address!!!
        echo "Chosen host: $targethost"
        ansible-playbook -e "selected_host=$targethost" swapper.yaml
        break;
