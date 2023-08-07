@@ -1,0 +1,46 @@
+---
+- name: Execute command on selected remote hosts
+  hosts: "{{ selected_host }}"
+  gather_facts: no
+
+  tasks:
+    - name: Run 'free -m' command on the selected host
+      shell: | 
+        free -m
+        date
+      args:
+        executable: /bin/bash
+      register: command1_output
+    - name: Display 'free -m' output
+      debug:
+        var: command1_output.stdout_lines
+
+    - name: Display instruction
+      debug:
+        msg: "VARJAL TURELMESEN AMIG NEM VEGEZ, TOBB PERCIG IS ELTARTHAT!!!!!!!!!!!!!!!"
+    
+    - name: Run swapOFF on the selected host
+      become: true
+      shell: | 
+        swapoff -a
+      args:
+        executable: /bin/bash
+
+    - name: Run swapON on the selected host
+      become: true
+      shell: | 
+        swapon -a
+      args:
+        executable: /bin/bash
+
+    - name: Run 'free -m' again
+      shell: | 
+        free -m
+        date
+      args:
+        executable: /bin/bash
+      register: swapon_output
+    
+    - name: Display swapon output
+      debug:
+        var: swapon_output.stdout_lines
