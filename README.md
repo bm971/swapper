@@ -1,4 +1,6 @@
-git clone git@github.com:bm971/swapper.git
+```git clone git@github.com:bm971/swapper.git```
+
+Indítás: ```ansible-playbook swapper.yaml``` Ha kell jelszó a root-hoz akkor ```--ask-become-pass``` kapcsolóval kell indítani
 
 Tesztelve: saját gépről WSL-ből
 
